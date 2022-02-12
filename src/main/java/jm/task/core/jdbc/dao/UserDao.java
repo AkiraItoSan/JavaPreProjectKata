@@ -5,6 +5,7 @@ import jm.task.core.jdbc.model.User;
 import java.util.List;
 
 public interface UserDao {
+    static final String USERS_TABLE = "users_table";
     void createUsersTable();
 
     void dropUsersTable();
