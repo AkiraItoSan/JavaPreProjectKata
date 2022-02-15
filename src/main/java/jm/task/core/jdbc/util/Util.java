@@ -1,5 +1,11 @@
 package jm.task.core.jdbc.util;
 
+import jm.task.core.jdbc.model.User;
+
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
+
 import java.sql.*;
 
 public class Util {
@@ -8,6 +14,8 @@ public class Util {
     static final String JDBS_DRIVER = "com.mysql.cj.jdbc.Driver";
     static final String USER = "root";
     static final String PASSWORD = "2202995SsIl";
+
+
 
     public static Connection connectToDataBase() throws SQLException {
         try {
@@ -19,19 +27,26 @@ public class Util {
 
     }
 
-    public static void createUsersTable() {
-            try (Connection con = connectToDataBase(); Statement statement = con.createStatement()) {
-                String SQL = "CREATE TABLE IF not EXISTS users_table " +
-                        "(id INTEGER not NULL, " +
-                        " name VARCHAR(50), " +
-                        " lastName VARCHAR(50), " +
-                        " age INTEGER not NULL," +
-                        " PRIMARY KEY (id))";
+    private static SessionFactory sessionFactory;
 
-                statement.executeUpdate(SQL);
-                System.out.println("Table successfully created...");
-            } catch (SQLException e) {
-                e.printStackTrace();
+    public static SessionFactory getSessionFactory() {
+        if (sessionFactory == null) {
+            try {
+                Configuration configuration = new Configuration();
+                configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL57Dialect")
+                        .setProperty("hibernate.connection.driver_class", JDBS_DRIVER)
+                        .setProperty("hibernate.hbm2ddl.auto", "update")
+                        .setProperty("hibernate.connection.url", DATABASE_URL)
+                        .setProperty("hibernate.connection.username", USER)
+                        .setProperty("hibernate.connection.password", PASSWORD);
+                configuration.addAnnotatedClass(User.class);
+                StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
+                sessionFactory = configuration.buildSessionFactory(builder.build());
+
+            } catch (Exception e) {
+                System.out.println("Исключение!" + e);
             }
+        }
+        return sessionFactory;
     }
 }

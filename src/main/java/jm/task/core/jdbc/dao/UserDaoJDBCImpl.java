@@ -1,6 +1,5 @@
 package jm.task.core.jdbc.dao;
 
-import com.sun.xml.bind.v2.TODO;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 
@@ -54,6 +53,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void removeUserById(long id) {
         String removeUserSQL = "DELETE FROM " + USERS_TABLE + " WHERE id=?";
+
         try (Connection con = Util.connectToDataBase(); PreparedStatement statement = con.prepareStatement(removeUserSQL)) {
             statement.setLong(1, id);
             statement.executeUpdate();
@@ -82,7 +82,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void cleanUsersTable() {
         try (Connection con = Util.connectToDataBase(); Statement statement = con.createStatement()) {
-            statement.executeUpdate("DELETE FROM " + USERS_TABLE);
+            statement.executeUpdate("TRUNCATE TABLE " + USERS_TABLE);
         } catch (SQLException e) {
             e.printStackTrace();
         }
