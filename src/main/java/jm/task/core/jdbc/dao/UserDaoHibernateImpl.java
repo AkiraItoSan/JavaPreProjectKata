@@ -17,7 +17,6 @@ public class UserDaoHibernateImpl implements UserDao {
     public void createUsersTable() {
         Session session = Util.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-
         session.createSQLQuery("CREATE TABLE IF not EXISTS " + USERS_TABLE +
                         "(id INTEGER not NULL, " +
                         " name VARCHAR(50), " +
@@ -53,7 +52,7 @@ public class UserDaoHibernateImpl implements UserDao {
     public void removeUserById(long id) {
         Session session = Util.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        session.createSQLQuery("DELETE FROM " + USERS_TABLE + " WHERE id=" + id);
+        session.createQuery("DELETE FROM User WHERE id=" + id);
         transaction.commit();
         session.close();
     }
@@ -62,7 +61,7 @@ public class UserDaoHibernateImpl implements UserDao {
     public List<User> getAllUsers() {
         Session session = Util.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        List<User> users = session.createSQLQuery("SELECT * FROM " + USERS_TABLE).addEntity(User.class).list();
+        List<User> users = session.createQuery("FROM User").list();
         transaction.commit();
         session.close();
 
@@ -73,7 +72,7 @@ public class UserDaoHibernateImpl implements UserDao {
     public void cleanUsersTable() {
         Session session = Util.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        session.createSQLQuery("TRUNCATE TABLE " + USERS_TABLE).executeUpdate();
+        session.createQuery("DELETE User ").executeUpdate();
         session.createSQLQuery("TRUNCATE TABLE kataschemas.hibernate_sequences").executeUpdate();
         transaction.commit();
         session.close();

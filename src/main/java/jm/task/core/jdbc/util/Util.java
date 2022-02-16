@@ -11,30 +11,44 @@ import java.sql.*;
 public class Util {
     // реализуйте настройку соеденения с БД
     static final String DATABASE_URL = "jdbc:mysql://localhost:3306/kataschemas";
-    static final String JDBS_DRIVER = "com.mysql.cj.jdbc.Driver";
+    static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
     static final String USER = "root";
     static final String PASSWORD = "2202995SsIl";
 
+    private static SessionFactory sessionFactory;
+    private static Connection con;
 
+    public static Connection getConnection() {
+        return con;
+    }
 
-    public static Connection connectToDataBase() throws SQLException {
+    public static void connectToDataBase() {
         try {
-            Class.forName(JDBS_DRIVER);
+            Class.forName(JDBC_DRIVER);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return DriverManager.getConnection(DATABASE_URL, USER, PASSWORD);
-
+        try {
+            con = DriverManager.getConnection(DATABASE_URL, USER, PASSWORD);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    private static SessionFactory sessionFactory;
+    public static void closeConnectToDataBase() {
+        try {
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
             try {
                 Configuration configuration = new Configuration();
                 configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL57Dialect")
-                        .setProperty("hibernate.connection.driver_class", JDBS_DRIVER)
+                        .setProperty("hibernate.connection.driver_class", JDBC_DRIVER)
                         .setProperty("hibernate.hbm2ddl.auto", "update")
                         .setProperty("hibernate.connection.url", DATABASE_URL)
                         .setProperty("hibernate.connection.username", USER)
