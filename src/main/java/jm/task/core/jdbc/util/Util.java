@@ -10,7 +10,7 @@ import java.sql.*;
 
 public class Util {
     // реализуйте настройку соеденения с БД
-    static final String DATABASE_URL = "jdbc:mysql://localhost:3306/kataschemas";
+    static final String DATABASE_URL = "jdbc:mysql://localhost:3306/kata";
     static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
     static final String USER = "root";
     static final String PASSWORD = "2202995SsIl";
@@ -62,5 +62,9 @@ public class Util {
             }
         }
         return sessionFactory;
+    }
+
+    public static void closeSessionFactory() {
+        sessionFactory.close();
     }
 }
